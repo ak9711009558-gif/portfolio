@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do Checklist</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#eef2f7;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+width:420px;
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+.input-area{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+input{
+flex:1;
+padding:10px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.add{
+background:#28a745;
+color:white;
+}
+
+ul{
+list-style:none;
+}
+
+li{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:10px;
+margin-bottom:10px;
+background:#f5f5f5;
+border-radius:8px;
+}
+
+.task{
+flex:1;
+margin-left:10px;
+}
+
+.done{
+text-decoration:line-through;
+color:gray;
+}
+
+.edit{
+background:#ffc107;
+margin-right:5px;
+}
+
+.delete{
+background:#dc3545;
+color:white;
+}
+
+.stats{
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>✅ To-Do Checklist</h2>
+
+<div class="input-area">
+<input type="text" id="taskInput" placeholder="Enter task">
+<button class="add" onclick="addTask()">Add</button>
+</div>
+
+<ul id="taskList"></ul>
+
+<div class="stats">
+Total: <span id="total">0</span> |
+Completed: <span id="completed">0</span> |
+Pending: <span id="pending">0</span>
+</div>
+
+</div>
+
+<script>
+
+let tasks=JSON.parse(localStorage.getItem("tasks"))||[];
+
+function save(){
+localStorage.setItem("tasks",JSON.stringify(tasks));
+}
+
+function render(){
+
+const list=document.getElementById("taskList");
+list.innerHTML="";
+
+let completed=0;
+
+tasks.forEach((task,index)=>{
+
+if(task.done) completed++;
+
+const li=document.createElement("li");
+
+li.innerHTML=`
+<input type="checkbox" ${task.done?"checked":""}
+onclick="toggle(${index})">
+
+<span class="task ${task.done?"done":""}">
+${task.text}
+</span>
+
+<div>
+<button class="edit" onclick="editTask(${index})">Edit</button>
+<button class="delete" onclick="deleteTask(${index})">Delete</button>
+</div>
+`;
+
+list.appendChild(li);
+
+});
+
+document.getElementById("total").innerText=tasks.length;
+document.getElementById("completed").innerText=completed;
+document.getElementById("pending").innerText=tasks.length-completed;
+
+save();
+
+}
+
+function addTask(){
+
+const input=document.getElementById("taskInput");
+
+if(input.value.trim()==""){
+alert("Enter a task");
+return;
+}
+
+tasks.push({
+text:input.value,
+done:false
+});
+
+input.value="";
+
+render();
+
+}
+
+function toggle(index){
+
+tasks[index].done=!tasks[index].done;
+
+render();
+
+}
+
+function editTask(index){
+
+let newTask=prompt("Edit Task",tasks[index].text);
+
+if(newTask!=null && newTask.trim()!=""){
+tasks[index].text=newTask;
+render();
+}
+
+}
+
+function deleteTask(index){
+
+tasks.splice(index,1);
+
+render();
+
+}
+
+document.getElementById("taskInput").addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+addTask();
+}
+
+});
+
+render();
+
+</script>
+
+</body>
+</html>

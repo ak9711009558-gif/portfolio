@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Authentication</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    width:350px;
+    background:#fff;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 20px rgba(0,0,0,.3);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#007bff;
+    color:#fff;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0056b3;
+}
+
+label{
+    font-size:14px;
+}
+
+.error{
+    color:red;
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.success{
+    text-align:center;
+}
+
+.logout{
+    margin-top:20px;
+    background:red;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="loginBox">
+
+<h2>Login</h2>
+
+<div class="error" id="error"></div>
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="password" id="password" placeholder="Password">
+
+<label>
+<input type="checkbox" id="showPassword">
+Show Password
+</label>
+
+<br><br>
+
+<label>
+<input type="checkbox" id="remember">
+Remember Me
+</label>
+
+<br><br>
+
+<button onclick="login()">Login</button>
+
+</div>
+
+<div class="container success" id="dashboard" style="display:none;">
+
+<h2>Welcome 🎉</h2>
+
+<p>Login Successful</p>
+
+<button class="logout" onclick="logout()">Logout</button>
+
+</div>
+
+<script>
+const validEmail="admin@example.com";
+const validPassword="Admin@123";
+
+window.onload=function(){
+
+if(localStorage.getItem("rememberEmail")){
+document.getElementById("email").value=localStorage.getItem("rememberEmail");
+document.getElementById("remember").checked=true;
+}
+
+}
+
+document.getElementById("showPassword").addEventListener("change",function(){
+
+document.getElementById("password").type=this.checked?"text":"password";
+
+});
+
+function login(){
+
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+const error=document.getElementById("error");
+
+error.innerHTML="";
+
+if(email===""||password===""){
+error.innerHTML="Please fill all fields.";
+return;
+}
+
+if(email===validEmail && password===validPassword){
+
+if(document.getElementById("remember").checked){
+localStorage.setItem("rememberEmail",email);
+}else{
+localStorage.removeItem("rememberEmail");
+}
+
+sessionStorage.setItem("loggedIn","true");
+
+document.getElementById("loginBox").style.display="none";
+document.getElementById("dashboard").style.display="block";
+
+}else{
+
+error.innerHTML="Invalid Email or Password.";
+
+}
+
+}
+
+function logout(){
+
+sessionStorage.removeItem("loggedIn");
+
+document.getElementById("dashboard").style.display="none";
+document.getElementById("loginBox").style.display="block";
+
+document.getElementById("password").value="";
+
+}
+</script>
+
+</body>
+</html>
