@@ -167,45 +167,44 @@ const observer = new IntersectionObserver((entries) => {
 
 });
 
-progressBars.forEach(bar => observer.observe(bar));
-
-emailjs.init("ZkwnAKnzYOEaAKU9z");
+// Initialize EmailJS
+emailjs.init({
+    publicKey: "ZKwnAKnzYOEaAKU9z"
+});
 
 const form = document.getElementById("contactForm");
+const status = document.getElementById("statusMessage");
 
-form.addEventListener("submit", function(e){
+form.addEventListener("submit", function (e) {
 
     e.preventDefault();
 
+    status.innerHTML = "Sending...";
+
     emailjs.send(
-
         "service_45cupwk",
-
         "template_in56vbg",
-
         {
-
             from_name: document.getElementById("name").value,
-
             from_email: document.getElementById("email").value,
-
             subject: document.getElementById("subject").value,
-
             message: document.getElementById("message").value
-
         }
+    )
+    .then(() => {
 
-    ).then(function(){
-
-        alert("✅ Message Sent Successfully!");
+        status.style.color = "#22c55e";
+        status.innerHTML = "✅ Message sent successfully!";
 
         form.reset();
 
-    }).catch(function(error){
+    })
+    .catch((error) => {
 
-        alert("❌ Failed to Send Message");
+        console.error(error);
 
-        console.log(error);
+        status.style.color = "#ef4444";
+        status.innerHTML = "❌ Failed to send message.";
 
     });
 
