@@ -152,7 +152,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Animate Progress Bars
 const progressBars = document.querySelectorAll(".progress-bar");
-
+progressBars.forEach(bar => observer.observe(bar));
 const observer = new IntersectionObserver((entries) => {
 
     entries.forEach(entry => {
@@ -169,7 +169,7 @@ const observer = new IntersectionObserver((entries) => {
 
 // Initialize EmailJS
 emailjs.init({
-    publicKey: "ZKwnAKnzYOEaAKU9z"
+    publicKey: "ZkwnAKnzYOEaAKU9z"
 });
 
 const form = document.getElementById("contactForm");
